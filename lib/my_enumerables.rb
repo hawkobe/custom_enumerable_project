@@ -29,7 +29,25 @@ module Enumerable
     end
     array_to_return
   end
+
+  def my_count(arg=nil)
+    count = 0
+    for elem in self
+      if arg
+        if elem == arg
+          count += 1
+        end
+      elsif block_given?
+        count += 1 if yield(elem) == true
+      else
+        count += 1
+      end
+    end
+    count
+  end
 end
+
+
 
 # You will first have to define my_each
 # on the Array class. Methods defined in
