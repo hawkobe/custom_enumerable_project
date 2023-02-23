@@ -1,14 +1,4 @@
 module Enumerable
-  def my_each
-    return to_enum unless block_given?
-        i = 0
-    while i < self.length
-      yield(self[i])
-      i += 1
-    end
-    self
-  end
-
   def my_each_with_index
     return to_enum unless block_given?
     i = 0
@@ -58,7 +48,7 @@ module Enumerable
   def my_all?(pattern=nil)
     self.my_each do |elem|
       if pattern
-        return false unless pattern == elem
+        return false unless pattern === elem
       elsif block_given?
         return false unless yield elem
       else
@@ -78,6 +68,15 @@ module Enumerable
     false 
   end
 
+  def my_none?(pattern=nil)
+    block_given? ? block = ->(elem) { yield elem } : block = ->(elem) { elem }
+    block = ->(elem) { pattern === elem } if pattern
+    self.my_each { |elem| return false if block.call(elem) }
+    true
+  end
+
+  def my_inject
+  end
 end
 
 
@@ -87,4 +86,13 @@ end
 # your enumerable module will have access
 # to this method
 class Array
+  def my_each
+    return to_enum unless block_given?
+        i = 0
+    while i < self.length
+      yield(self[i])
+      i += 1
+    end
+    self
+  end
 end
